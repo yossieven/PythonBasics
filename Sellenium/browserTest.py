@@ -1,5 +1,3 @@
-import subprocess
-from datetime import datetime
 from time import sleep
 
 import allure
@@ -7,17 +5,6 @@ import pytest
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
-
-
-def take_screenshot(browser, test_name):
-    screenshots_dir = "/failure_screenshots"
-    screenshot_file_path = "{}/{}.png".format(screenshots_dir, test_name)
-    print("taking screenshot...")
-    print(screenshot_file_path)
-    browser.save_screenshot(
-        screenshot_file_path
-    )
-
 
 # Fixture for Firefox
 @pytest.fixture(scope="class")
@@ -75,24 +62,21 @@ def test_failed_check(request):
             print("executing test failed", request.node.nodeid)
 
 
-
-
 def take_screenshot(driver, name):
     sleep(1)
-
+    print("taking screenshot now!")
     screenshots_dir = "/failure_screenshots"
     screenshot_file_path = "{}.png".format(name)
     print("file name == " + screenshot_file_path)
     driver.save_screenshot(screenshot_file_path)
 
-    allure.attach(driver.get_screenshot_as_png(),
-                       name=name,
-                       attachment_type=allure.attachment_type.PNG)
+    allure.attach(screenshot_file_path,
+                  type=allure.attachment_type.PNG)
 
 
 class Test_URL_Chrome(Basic_Chrome_Test):
 
-    @pytest.mark.xfail(raises=NoSuchElementException)
+
     def test_open_search_not_found(self, test_failed_check):
         self.driver.get("https://www.google.com/")
         elem = self.driver.find_element_by_name("q")
@@ -106,7 +90,8 @@ class Test_URL_Chrome(Basic_Chrome_Test):
         elem.send_keys("qwpoeoiriut")
         elem.send_keys(Keys.RETURN)
         # self.driver.find_element_by_xpath("/html/body[@id='gsr']/div[@id='main']/div[@id='cnt']/div[@class='mw'][2]/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='topstuff']/div[@class='mnr-c']/div[@class='med card-section']")
-        result = self.driver.find_element_by_xpath("/html/body[@id='gsr']/div[@id='main']/div[@id='cnt']/div[@class='mw'][2]/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']/div/div[@id='rso']")
+        result = self.driver.find_element_by_xpath(
+            "/html/body[@id='gsr']/div[@id='main']/div[@id='cnt']/div[@class='mw'][2]/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']/div/div[@id='rso']")
 
     def test_open_search_dog_url(self, test_failed_check):
         self.driver.get("https://www.google.com/")
@@ -121,7 +106,8 @@ class Test_URL_Chrome(Basic_Chrome_Test):
         elem.send_keys("dog")
         elem.send_keys(Keys.RETURN)
         try:
-            self.driver.find_element_by_xpath("/html/body[@id='gsr']/div[@id='main']/div[@id='cnt']/div[@class='mw'][2]/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']/div/div[@id='rso']")
+            self.driver.find_element_by_xpath(
+                "/html/body[@id='gsr']/div[@id='main']/div[@id='cnt']/div[@class='mw'][2]/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']/div/div[@id='rso']")
         except Exception as e:
             pytest.fail(e)
         # sleep(1)

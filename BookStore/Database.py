@@ -1,5 +1,5 @@
 import psycopg2
-
+debug=True
 
 class Database:
     """

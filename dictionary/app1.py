@@ -1,5 +1,8 @@
 import json
 import difflib
+from time import sleep
+
+from ScreenCapture.capturerunner import ScreenCaptureRunner
 
 data = json.load(open("data.json"))
 
@@ -57,4 +60,7 @@ def translate_word(word):
             continue
 
 
+ScreenCaptureRunner.run('another test', filename='output.mp4', window='adobe')
+sleep(10)
+ScreenCaptureRunner.shutdown('another test')
 translate_word(None)
